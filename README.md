@@ -1,2 +1,2 @@
-# codeacademy_nodejs
+NODE.JS MUSIC API PROJECT
  

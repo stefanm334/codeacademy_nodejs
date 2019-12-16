@@ -2,18 +2,15 @@ import Sequelize from 'sequelize'
 import connectionSequelize from '../database/sequelize-database.mjs'
 
 
-const Playlist = connectionSequelize.define('playlist', {
+const PlaylistTracks = connectionSequelize.define('playlist_tracks', {
 
-    Title: {
-        type: Sequelize.STRING
-    },
-    CreatedBy: {
+    TrackId: {
         type: Sequelize.INTEGER
     },
-    IsPublic: {
-        type: Sequelize.BOOLEAN
-    
+    PlaylistId: {
+        type: Sequelize.INTEGER
     }
+    
 
 
 }, {
@@ -23,4 +20,4 @@ const Playlist = connectionSequelize.define('playlist', {
 
 
 
-export default Playlist
+export default PlaylistTracks

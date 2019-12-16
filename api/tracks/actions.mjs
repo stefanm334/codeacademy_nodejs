@@ -5,7 +5,8 @@ import albumQueries from "../albums/queries.mjs";
 import artistQueries from "../artists/queries.mjs";
 import connectionSequelize from "../database/sequelize-database.mjs";
 import expressValidator from "express-validator";
-import jwtDecode from "jwt-decode";
+import jwtDecode from "jwt-decode"; 
+import PlaylistTracks from "../models/PlaylistTracks.mjs"
 
 var getAllTracks = async (req, res, next) => {
   try {
@@ -228,6 +229,75 @@ var likeTrack = async (req, res, next) => {
   }
 };
 
+var addTrackToPlaylist = async (req, res, next) => {
+  var artistId = req.params.id;
+  var urlAlbumId = parseInt(req.params.albumid);
+  var trackNumber = parseInt(req.params.trackid);
+
+  try {
+    var result = await artistQueries.getSpecificArtistQuery(artistId);
+    if (result.length < 1) {
+      var error = new Error("Artist doesnt exist");
+      error.status = 404;
+      next(error);
+    }
+  } catch (error) {
+    res.send(error);
+  }
+
+  try {
+    var albumResult = await albumQueries.getSpecificAlbumQuery(
+      urlAlbumId,
+      artistId
+    );
+  } catch (error) {
+    res.send(error);
+  }
+
+  if (!albumResult[0]) {
+    var error = new Error("Invalid album parameters/ album doesnt exist");
+    error.status = 404;
+    next(error);
+  }
+  var albumId = albumResult[0].Id;
+
+  try {
+    var track = await queries.findRealTrackId(albumId, artistId, trackNumber);
+    var realTrackId = track[0].dataValues.id;
+  } catch (error) {
+    res.status(404).json("Track id doesnt exist");
+  }
+
+  if (req.headers.authorization === undefined) {
+    var error = new Error("You have to be authorized to add track to playlist");
+    error.status = 401;
+    next(error);
+  } else {
+    var header = req.headers.authorization.split(" ");
+    var token = header[1];
+    var decodedToken = jwtDecode(token);
+  }
+
+  console.log(decodedToken)
+
+  try {
+     var playlistTrack = PlaylistTracks.create({
+      PlaylistId: req.body.PlaylistId,
+      TrackId: realTrackId
+    });
+    res
+      .status(201)
+      .json(
+        `Successfully added track with TrackId ${realTrackId} to playlist${req.body.PlaylistId}`
+      );
+  } catch (error) {
+    res.send(error.message);
+  }
+  
+
+
+};
+
 export {
   getAllTracks,
   getSpecificTrack,
@@ -235,5 +305,6 @@ export {
   deleteTrack,
   updateTrack,
   getAllTracksForSpecifilUserAndAlbum,
-  likeTrack
+  likeTrack,
+  addTrackToPlaylist
 };

@@ -77,7 +77,8 @@ var deletePlaylist = async (req, res, next) => {
 var updatePlaylist = async (req, res, next) => {
   var tempPlaylistId = parseInt(req.params.playlistid);
   try {
-    var playlist = await Playlist.findAll({
+
+     var playlist = await Playlist.findAll({
       where: {
         CreatedBy: req.params.userid
       },
@@ -85,7 +86,7 @@ var updatePlaylist = async (req, res, next) => {
       offset: tempPlaylistId - 1
     });
     var realPlaylistId = playlist[0].dataValues.id;
-    res.send(playlist);
+
   } catch (error) {
     res.send(error);
   }
@@ -96,7 +97,7 @@ var updatePlaylist = async (req, res, next) => {
         Id: realPlaylistId
       }
     });
-    res.send(`Updated playlist with id ${JSON.stringify(realPlaylistId)}`);
+    res.send(`Updated playlist with real/database id ${JSON.stringify(realPlaylistId)}`);
   } catch (error) {
     res.send(error);
   }

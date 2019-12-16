@@ -8,7 +8,7 @@ router.get("/api/user/:userid/playlist",getAllPlaylistsForSpecificUser);
 router.get("/api/user/:userid/playlist/:playlistid",getSpecificPlaylistForUser);
 router.post("/api/user/:userid/playlist",createPlaylist);
 router.delete("/api/user/:userid/playlist/:playlistid",deletePlaylist);
-router.put("/api/user/:id/playlist/:playlistid",updatePlaylist);
+router.put("/api/user/:userid/playlist/:playlistid",updatePlaylist);
 
 
 export default router;

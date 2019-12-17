@@ -279,6 +279,23 @@ var addTrackToPlaylist = async (req, res, next) => {
   }
 
   console.log(decodedToken)
+ 
+  try {
+    var checkPlaylist =  await PlaylistTracks.findAll({
+      where: {
+        PlaylistId: req.body.PlaylistId,
+        TrackId: realTrackId
+      }
+    });
+    
+  } catch (error) {
+    next(error)
+  }
+
+if(checkPlaylist[0].dataValues != undefined){
+  res.send("Track is already added to this playlist")
+}
+
 
   try {
      var playlistTrack = PlaylistTracks.create({
